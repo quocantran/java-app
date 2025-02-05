@@ -61,6 +61,10 @@ public class Company {
     @JoinTable(name = "companies_resumes", joinColumns = @JoinColumn(name = "company_id"), inverseJoinColumns = @JoinColumn(name = "resume_id"))
     private List<Resume> resumes;
 
+    public List<User> getUsersFollowed() {
+        return usersFollowed;
+    }
+
     @ManyToMany(targetEntity = User.class)
     @JsonIgnoreProperties(value = "followedCompanies")
     @JoinTable(name = "companies_users_followed", joinColumns = @JoinColumn(name = "company_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))

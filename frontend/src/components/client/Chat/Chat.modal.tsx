@@ -2,7 +2,6 @@
 import React, { Fragment, useEffect, useRef, useState } from "react";
 import styles from "../../../styles/Chat.module.scss";
 import classnames from "classnames/bind";
-import socket from "../../../utils/socket";
 import { useAppSelector } from "@/lib/redux/hooks";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -21,6 +20,7 @@ import { LoadingOutlined } from "@ant-design/icons";
 import { Flex, Spin } from "antd";
 
 import { Button, message } from "antd";
+import socket from "@/utils/socket";
 
 const cx = classnames.bind(styles);
 
@@ -47,19 +47,22 @@ const Chat = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    socket.on("message", (message: any) => {
-      if (!open) {
-        setNotification(true);
-      }
+    if(socket){
+      socket.on("message", (message: any) => {
+        if (!open) {
+          setNotification(true);
+        }
+  
+        setMessages((prevMessages: any) => [...prevMessages, message]);
+  
+        setIsSend(!isSend);
+      });
+  
+      return () => {
+        socket.off("message");
+      };
 
-      setMessages((prevMessages: any) => [...prevMessages, message]);
-
-      setIsSend(!isSend);
-    });
-
-    return () => {
-      socket.off("message");
-    };
+    }
   }, [isSend]);
 
   useEffect(() => {
@@ -148,7 +151,6 @@ const Chat = () => {
     };
 
     createChat(data);
-    console.log(data);
     socket.emit("message", {
       user: {
         id: user.id,
@@ -163,11 +165,14 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    socket.on("typing", (message: any) => {
-      setUserTyping(message);
-      setIsTyping(true);
-    });
-    socket.on("stopTyping", () => setIsTyping(false));
+    if(socket){
+
+      socket.on("typing", (message: any) => {
+        setUserTyping(message);
+        setIsTyping(true);
+      });
+      socket.on("stopTyping", () => setIsTyping(false));
+    }
   }, [input]);
 
   useEffect(() => {

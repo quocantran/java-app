@@ -9,10 +9,14 @@ import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.annotation.OnConnect;
 import com.corundumstudio.socketio.annotation.OnDisconnect;
 import com.corundumstudio.socketio.annotation.OnEvent;
+import com.example.test.domain.Company;
+import com.example.test.service.CompanyService;
 import com.example.test.service.JobService;
+import com.example.test.service.JwtService;
 import com.example.test.service.SocketService;
 import com.example.test.service.TransactionService;
-
+import org.springframework.security.oauth2.jwt.Jwt;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
@@ -24,22 +28,42 @@ public class AppGateway {
     private final SocketService socketService;
     private final TransactionService transactionService;
     private final JobService jobsService;
+    private final CompanyService companyService;
+    private final JwtService jwtService;
 
     public AppGateway(SocketIOServer server, SocketService socketService, TransactionService transactionService,
-            JobService jobsService) {
+            JobService jobsService, CompanyService companyService, JwtService jwtService) {
         this.server = server;
         this.socketService = socketService;
         this.transactionService = transactionService;
         this.jobsService = jobsService;
+        this.companyService = companyService;
+        this.jwtService = jwtService;
     }
 
     @OnConnect
     public void onConnect(SocketIOClient client) {
-        String userId = client.getHandshakeData().getSingleUrlParam("userId");
-        if (userId != null) {
-            clients.put(userId, client);
+        try{
+            Jwt jwt = jwtService.checkAccessToken(client.getHandshakeData().getSingleUrlParam("accessToken"));
+            if (jwt == null) {
+                client.disconnect();
+                return;
+            }
+
+            String usrEmail = jwt.getClaim("sub");
+            if (usrEmail != null) {
+                clients.put(usrEmail, client);
+                log.info("Client connected: " + usrEmail);
+            }
+            else{
+                client.disconnect();
+            }
         }
-        System.out.println("Client connected: " + userId);
+        catch(Exception e){
+            client.disconnect();
+            return;
+        }
+        
     }
 
     @OnDisconnect
@@ -54,7 +78,7 @@ public class AppGateway {
         if (userIdToRemove != null) {
             clients.remove(userIdToRemove);
         }
-        System.out.println("Client disconnected: " + userIdToRemove);
+        log.info("Client disconnected: " + userIdToRemove);
     }
 
     @OnEvent("message")
@@ -94,5 +118,34 @@ public class AppGateway {
         client.sendEvent("checkPayment", Map.of(
                 "message", "Transaction success",
                 "status", 1));
+    }
+
+    @OnEvent("createJob")
+    @Transactional
+    public void handleSendNotificationFromServer(SocketIOClient client, Map<String, Object> payload) {
+        String senderId = (String) payload.get("senderId");
+        if (senderId != null) {
+            Company company = companyService.getById(senderId);
+            if (company != null) {
+                company.getUsersFollowed().forEach(user -> {
+                    String email = user.getEmail();
+                    String jobName = (String) payload.get("jobName");
+                    String jobId = (String) payload.get("jobId");
+                    SocketIOClient targetClient = clients.get(email);
+                   
+                    if (targetClient != null) {
+                        String messages = "Công ty bạn đang theo dõi (" + company.getName() + ") đã tạo mới công việc " + jobName + "!";
+                        targetClient.sendEvent("createJob", Map.of(
+                                "message", messages,
+                                "companyName", company.getName(),
+                                "jobId", jobId
+                        ));
+                        log.info("Notification sent to user: " + email);
+                    } else {
+                        log.info("User with email: " + email + " not found");
+                    }
+                });
+            }
+        }
     }
 }

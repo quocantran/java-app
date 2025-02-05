@@ -63,7 +63,7 @@ const Login: React.FC = () => {
       if (!res.ok) {
         notification.error({
           message: "Có lỗi xảy ra!",
-          description: data.message,
+          description: data.error,
         });
         setLoading(false);
         return;

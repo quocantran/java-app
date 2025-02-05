@@ -37,10 +37,10 @@ public class JobController {
         this.jobService = jobService;
     }
 
-    @PostMapping("")
-    public ResponseEntity<CreateJobDTO> create(@Valid @RequestBody CreateJobDTO job) throws BadRequestException {
+    @PostMapping("/create")
+    public ResponseEntity<ResponseJobDTO> create(@Valid @RequestBody CreateJobDTO job) throws BadRequestException {
 
-        CreateJobDTO entity = this.jobService.create(job);
+        ResponseJobDTO entity = this.jobService.create(job);
         return new ResponseEntity<>(entity, HttpStatus.CREATED);
     }
 

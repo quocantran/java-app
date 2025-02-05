@@ -15,16 +15,11 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-RUN addgroup -S userTemp && adduser -S userTemp -G userTemp
-
 COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/public ./public
 
-RUN chown -R userTemp:userTemp /app
-
-USER userTemp
+RUN npm install --production
 
 EXPOSE 3000
 

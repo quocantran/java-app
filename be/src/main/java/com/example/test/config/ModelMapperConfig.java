@@ -8,21 +8,25 @@ import org.modelmapper.PropertyMap;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 import com.example.test.domain.JobResume;
 import com.example.test.domain.Role;
 import com.example.test.domain.request.role.UpdateRoleDTO;
 import com.example.test.domain.response.resume.ResponseJobResumeDTO;
 import com.example.test.repository.PermissionRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 @Configuration
 public class ModelMapperConfig {
-    private final PermissionRepository permissionRepository;
 
-    public ModelMapperConfig(PermissionRepository permissionRepository) {
-        this.permissionRepository = permissionRepository;
+    @Bean
+    public ObjectMapper objectMapper() {
+        return Jackson2ObjectMapperBuilder.json()
+                .modules(new JavaTimeModule())
+                .build();
     }
-
     @Bean
     protected ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();

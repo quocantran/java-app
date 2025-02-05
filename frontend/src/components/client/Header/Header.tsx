@@ -22,14 +22,18 @@ import {
 } from "@ant-design/icons";
 import { setLogoutAction } from "@/lib/redux/slice/auth.slice";
 import ManageUser from "./User.manage";
-import { logout } from "@/config/api";
+import { fetchNotifications, logout } from "@/config/api";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBell, faCircle } from "@fortawesome/free-solid-svg-icons";
+import { IMeta, INotification } from "@/types/backend";
+import NotificationCard from "./Notification.card";
+import socket from "@/utils/socket";
 const cx = classnames.bind(styles);
 
 interface IMessageFromServer {
   message: string;
   companyName: string;
-  job: string;
-  type: string;
+  jobId: string;
 }
 
 const Header: React.FC = () => {
@@ -39,9 +43,38 @@ const Header: React.FC = () => {
   const loading = useAppSelector((state) => state?.auth.isLoading);
   const [isNoti, setIsNoti] = useState<boolean>(false);
   const [isNewNoti, setIsNewNoti] = useState<boolean>(false);
+  const [notifications, setNotifications] = useState<INotification[]>([]);
   const userRole = user?.role.name;
   const notiRef = useRef<HTMLDivElement>(null);
   const [api, contextHolder] = notification.useNotification();
+  const [meta, setMeta] = useState<IMeta>();
+  
+  useEffect(() => {
+    socket.on("createJob", (data: IMessageFromServer) => {
+      
+      api.open({
+        message: <div style={{ display: "flex", alignItems: "center" , justifyContent: "center"}}>
+        <FontAwesomeIcon icon={faBell} style={{ color: "rgb(1, 126, 183)", marginRight: "10px", fontSize: "25px" }} />
+        <h3 style={{ color: "#000",  fontSize: "20px" }}>Thông Báo</h3>
+      </div>,
+        description: data.message,
+        duration: 10,
+      });
+      
+      const newNoti = {
+        content: data.message,
+        createdAt: new Date().toISOString(),
+        options: { jobId: data.jobId },
+      } as INotification;
+
+      setNotifications((prevNotifications) => [newNoti, ...prevNotifications]);
+      setIsNewNoti(true);
+    });
+
+    return () => {
+      socket.off("notification");
+    };
+  }, []);
 
   const dispatch = useAppDispatch();
   const handleLogout = async () => {
@@ -68,6 +101,23 @@ const Header: React.FC = () => {
       document.body.removeEventListener("click", () => {});
     };
   }, []);
+
+  useEffect(() => {
+    if (isAuth) {
+      const getNotification = async () => {
+        try {
+          const res = await fetchNotifications({current: 1, pageSize: 50});
+
+          if (res.data) {
+            setNotifications(res.data.result as INotification[]);
+            setMeta(res.data.meta);
+          }
+        } catch (error) {}
+      };
+
+      getNotification();
+    }
+  }, [isAuth]);
 
   const itemsDropdown = [
     {
@@ -126,6 +176,43 @@ const Header: React.FC = () => {
           <div className={cx("header-right")}>
             {isAuth ? (
               <div className={cx("right-items")}>
+                <div
+                  onClick={handleClick}
+                  className={cx("header-notification")}
+                >
+                  <FontAwesomeIcon
+                    style={isNoti ? { color: "rgb(1, 126, 183)" } : {}}
+                    icon={faBell}
+                  />
+                </div>
+
+                {isNewNoti && (
+                  <FontAwesomeIcon icon={faCircle} className={cx("noti-dot")} />
+                )}
+                <div
+                  onClick={(e) => e.stopPropagation()}
+                  ref={notiRef}
+                  style={
+                    isNoti
+                      ? { opacity: 1, visibility: "visible" }
+                      : { opacity: 0, visibility: "hidden" }
+                  }
+                  className={cx("noti-content")}
+                >
+                  <div className={cx("noti-header")}>
+                    <p>
+                      {notifications.length > 0
+                        ? "Thông báo"
+                        : "Không có thông báo mới"}
+                    </p>
+                  </div>
+
+                  <div className={cx("noti-inner")}>
+                    {notifications.map((item, index) => (
+                      <NotificationCard key={index} notification={item} />
+                    ))}
+                  </div>
+                </div>
                 <Dropdown
                   menu={{ items: itemsDropdown as any }}
                   trigger={["click"]}

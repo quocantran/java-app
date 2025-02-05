@@ -54,7 +54,7 @@ public class CompanyController {
         return new ResponseEntity<UpdateCompanyDTO>(res, HttpStatus.OK);
     }
 
-    @PostMapping("")
+    @PostMapping("/create")
     public ResponseEntity<CreateCompanyDTO> createCompany(@Valid @RequestBody CreateCompanyDTO company)
             throws BadRequestException {
         CreateCompanyDTO res = this.companyService.createCompany(company);

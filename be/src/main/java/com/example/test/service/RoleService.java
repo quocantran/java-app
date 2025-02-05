@@ -1,6 +1,7 @@
 package com.example.test.service;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -53,7 +54,7 @@ public class RoleService {
         return role;
 
     }
-
+    @CacheEvict(value = "roles", allEntries = true)
     public UpdateRoleDTO update(String id, UpdateRoleDTO role) throws BadRequestException {
         try {
             Long.parseLong(id);
@@ -122,7 +123,7 @@ public class RoleService {
     public Role getRoleByName(String name) {
         return this.roleRepository.findByName(name);
     }
-
+    @CacheEvict(value = "roles", allEntries = true)
     public void delete(String id) throws BadRequestException {
         try {
             Long.parseLong(id);

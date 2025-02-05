@@ -43,6 +43,7 @@ import { ICompanySelect, ISkillSelect } from "../Company/Company.modal";
 import dayjs from "dayjs";
 import { useRouter, useSearchParams } from "next/navigation";
 import { isEmbedded } from "react-device-detect";
+import socket from "@/utils/socket";
 const JobUpsert = (props: any) => {
   const [companies, setCompanies] = useState<ICompanySelect[]>([]);
 
@@ -129,7 +130,6 @@ const JobUpsert = (props: any) => {
   };
 
   const onFinish = async (values: any) => {
-    console.log(values.skills);
 
     if (dataUpdate?.id) {
       //update
@@ -191,23 +191,30 @@ const JobUpsert = (props: any) => {
         active: values.active,
       };
 
-      try {
+      
         const res = await createJob(job);
         if (res.data) {
           message.success(`Tạo mới công việc ${job.name} thành công`);
           navigate.push("/admin/jobs");
-        } else {
+          socket.emit("createJob", {
+            senderId: job.company.toString(),
+            jobName: job.name,
+            jobId: res.data.id.toString(),
+          });
+          
+        } else if(res.status == 403){
+          notification.error({
+            message: "Có lỗi xảy ra",
+            description: "Bạn không có quyền thực hiện thao tác này",
+          });
+        }
+        else {
           notification.error({
             message: "Có lỗi xảy ra",
             description: res.error,
           });
         }
-      } catch (err) {
-        notification.error({
-          message: "Có lỗi xảy ra",
-          description: "Bạn không có quyền thực hiện thao tác này",
-        });
-      }
+      
     }
   };
 

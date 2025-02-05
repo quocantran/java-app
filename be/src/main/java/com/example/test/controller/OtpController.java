@@ -25,8 +25,8 @@ public class OtpController {
     }
 
     @PostMapping("")
-    public ResponseEntity<OtpDTO> createOtp(@RequestParam("email") String email) throws BadRequestException {
-        OtpDTO otp = this.otpService.createOtp(email);
+    public ResponseEntity<OtpDTO> createOtp(@RequestBody OtpDTO otpDto) throws BadRequestException {
+        OtpDTO otp = this.otpService.createOtp(otpDto);
         return new ResponseEntity<>(otp, HttpStatus.CREATED);
     }
 }

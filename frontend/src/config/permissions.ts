@@ -7,7 +7,7 @@ export const ALL_PERMISSIONS = {
     },
     CREATE: {
       method: "POST",
-      apiPath: "/api/v1/companies",
+      apiPath: "/api/v1/companies/create",
       module: "COMPANIES",
     },
     UPDATE: {
@@ -23,7 +23,7 @@ export const ALL_PERMISSIONS = {
   },
   JOBS: {
     GET_PAGINATE: { method: "GET", apiPath: "/api/v1/jobs", module: "JOBS" },
-    CREATE: { method: "POST", apiPath: "/api/v1/jobs", module: "JOBS" },
+    CREATE: { method: "POST", apiPath: "/api/v1/jobs/create", module: "JOBS" },
     UPDATE: { method: "PATCH", apiPath: "/api/v1/jobs/:id", module: "JOBS" },
     DELETE: { method: "DELETE", apiPath: "/api/v1/jobs/:id", module: "JOBS" },
   },

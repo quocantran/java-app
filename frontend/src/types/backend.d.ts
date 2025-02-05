@@ -269,3 +269,16 @@ export interface ISkill {
   createdAt?: string;
   updatedAt?: string;
 }
+
+export interface INotification{
+  id: string;
+  senderId : string;
+  receiverId : string;
+  content : string;
+  type : string;
+  options: {
+    jobId?: string;
+  }
+  createdAt: string;
+  updatedAt: string;
+}

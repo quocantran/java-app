@@ -65,6 +65,10 @@ public class SecurityConfiguration {
             "/api/v1/users/password/reset-password",
             "/api/v1/chats/**",
             "/actuator/**",
+            "/api/v1/skills/**",
+            "/api/v1/subscribers/**",
+            "/api/v1/statistics/report",
+            "/api/v1/comments/**"
     };
 
     @Bean
@@ -79,7 +83,7 @@ public class SecurityConfiguration {
                         authz
 
                                 .requestMatchers(AUTH_WHITELIST).permitAll()
-                                .anyRequest().permitAll()
+                                .anyRequest().authenticated()
 
                 )
                 // handle exceptions jwt

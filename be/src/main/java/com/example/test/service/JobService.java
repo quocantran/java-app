@@ -11,6 +11,7 @@ import com.example.test.domain.Company;
 import com.example.test.domain.Job;
 import com.example.test.repository.JobRepository;
 import com.example.test.repository.UserRepository;
+import com.example.test.utils.constant.NotificationOptionEnum;
 
 import jakarta.transaction.Transactional;
 
@@ -18,12 +19,15 @@ import com.example.test.domain.Skill;
 import com.example.test.domain.User;
 import com.example.test.domain.request.job.CreateJobDTO;
 import com.example.test.domain.request.job.UpdateJobDTO;
+import com.example.test.domain.request.notification.CreateNotificationDTO;
 import com.example.test.domain.response.ResponseMetaDTO;
 import com.example.test.domain.response.ResponsePaginationDTO;
 import com.example.test.domain.response.job.ResponseJobDTO;
 import com.example.test.domain.response.user.ResponseUserDTO;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,17 +37,19 @@ public class JobService {
     private final CompanyService companyService;
     private final ModelMapper modelMapper;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
     public JobService(JobRepository jobRepository, SkillService skillService, CompanyService companyService,
-            ModelMapper modelMapper, UserRepository userRepository) {
+            ModelMapper modelMapper, UserRepository userRepository, NotificationService notificationService) {
         this.jobRepository = jobRepository;
         this.skillService = skillService;
         this.companyService = companyService;
         this.modelMapper = modelMapper;
         this.userRepository = userRepository;
+        this.notificationService = notificationService;
     }
 
-    public CreateJobDTO create(CreateJobDTO job) throws BadRequestException {
+    public ResponseJobDTO create(CreateJobDTO job) throws BadRequestException {
 
         List<Skill> skills = this.skillService.findSkillByIdIn(job.getSkills());
         job.setSkills(skills.stream().map(Skill::getId).collect(Collectors.toList()));
@@ -61,7 +67,19 @@ public class JobService {
         entity.setSkills(skills);
         this.jobRepository.save(entity);
 
-        return job;
+        CreateNotificationDTO notificationDTO = new CreateNotificationDTO();
+        Map<Object, Object> options = new HashMap<>();
+
+        options.put("jobId", entity.getId());
+
+        notificationDTO.setSenderId(String.valueOf(company.getId()));
+        notificationDTO.setContent("Công ty (" + company.getName() + ") đã tạo một công việc mới! Hãy xem ngay!");
+        notificationDTO.setType(NotificationOptionEnum.CREATE_JOB);
+        notificationDTO.setOptions(options);
+
+        this.notificationService.create(notificationDTO);
+
+        return modelMapper.map(entity, ResponseJobDTO.class);
     }
 
     public Boolean findJobByNameAndCompany(String name, Company company) {

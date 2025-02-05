@@ -60,8 +60,8 @@ const JobTransaction = (props: IProps) => {
               userId: user.id,
               jobId: job.id,
             });
-          }, 2000);
-        }, 1000);
+          }, 1000*30);
+        },1000*15);
       }
 
       return () => {
@@ -244,7 +244,7 @@ const JobTransaction = (props: IProps) => {
                       </div>
                       <div className={cx("qr-title")}>
                         <span>
-                          Sau khi thanh toán xong vui lòng chờ vài giây để hệ
+                          Sau khi thanh toán xong vui lòng không tắt trình duyệt và bảng thanh toán và chờ vài giây để hệ
                           thống xác nhận!
                         </span>
                       </div>

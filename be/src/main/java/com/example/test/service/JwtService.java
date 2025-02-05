@@ -64,6 +64,16 @@ public class JwtService {
         }
     }
 
+    public Jwt checkAccessToken(String token){
+        NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withSecretKey(getSecretKey(jwtSecret))
+                .macAlgorithm(MAC_ALGORITHM).build();
+        try {
+            return jwtDecoder.decode(token);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
     public String createAccessToken(String email, User user) {
         Instant now = Instant.now();
         Instant validity = now.plus(this.jwtAccessExpiration, ChronoUnit.SECONDS);

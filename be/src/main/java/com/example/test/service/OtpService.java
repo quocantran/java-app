@@ -46,7 +46,8 @@ public class OtpService {
         return true;
     }
 
-    public OtpDTO createOtp(String email) throws BadRequestException {
+    public OtpDTO createOtp(OtpDTO otpDTO) throws BadRequestException {
+        String email = otpDTO.getEmail();
         User usr = this.userService.getUserByEmail(email);
 
         if (usr == null) {

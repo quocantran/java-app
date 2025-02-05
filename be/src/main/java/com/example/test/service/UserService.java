@@ -31,7 +31,7 @@ public class UserService {
     private final CompanyService companyService;
     private final RoleService roleService;
     private final MailService mailService;
-
+    
     private final ModelMapper modelMapper;
 
     public UserService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder,
@@ -80,7 +80,7 @@ public class UserService {
 
     public RegisterUserDTO register(RegisterUserDTO entity) throws BadRequestException {
         if (this.userRepository.findByEmail(entity.getEmail()) != null) {
-            throw new BadRequestException("User already exists");
+            throw new BadRequestException("Email already exists");
         }
 
         Role role = this.roleService.getRoleByName("NORMAL_USER");
@@ -180,9 +180,9 @@ public class UserService {
         return user.convertResponseUserDto();
     }
 
-    public User getUserByEmail(String username) {
+    public User getUserByEmail(String email) {
 
-        return this.userRepository.findByEmail(username);
+        return this.userRepository.findByEmail(email);
     }
 
     public void updateUserToken(String email, String refreshToken) {
@@ -193,8 +193,11 @@ public class UserService {
         }
     }
 
-    public void resetPassword(String email) {
+    public void resetPassword(String email) throws BadRequestException{
         String newPassword = UUID.randomUUID().toString().substring(0, 8);
+        User user = this.getUserByEmail(email);
+        user.setPassword(bCryptPasswordEncoder.encode(newPassword));
+        this.userRepository.save(user);
 
         this.mailService.sendNewPassword(newPassword, email);
     }

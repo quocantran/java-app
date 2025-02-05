@@ -22,7 +22,6 @@ const nextConfig = {
       },
     ];
   },
-  output: "standalone",
   experimental: {
     missingSuspenseWithCSRBailout: false,
   },

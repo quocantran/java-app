@@ -9,8 +9,6 @@ import com.example.test.domain.Permission;
 @Repository
 public interface PermissionRepository extends JpaRepository<Permission, Long>, JpaSpecificationExecutor<Permission> {
 
-    Permission save(Permission permission);
-
     Permission findByName(String name);
 
     Permission findById(long id);

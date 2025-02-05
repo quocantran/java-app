@@ -80,7 +80,10 @@ public class UserController {
     public String forgotPassword(@RequestParam(value = "token", required = false) String token,
             @RequestParam(value = "email", required = false) String email)
             throws BadRequestException {
-        this.otpService.verifyOtp(email, token);
+        Boolean ok = this.otpService.verifyOtp(email, token);
+        if(!ok){
+            throw new BadRequestException("Invalid token");
+        }
 
         this.userService.resetPassword(email);
         return "forgot-password.template.html";

@@ -22,10 +22,13 @@ import {
   IReport,
   ISkill,
   IUpdateResumeStatus,
+  INotification,
 } from "@/types/backend";
 import { message, notification } from "antd";
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
+const BACKEND_URL = typeof window === "undefined" 
+? process.env.NEXT_PUBLIC_API_SERVER_URL 
+: process.env.NEXT_PUBLIC_API_URL;
 const NO_RETRY_HEADER = "No-Retry";
 
 interface FetchOptions extends RequestInit {
@@ -242,7 +245,7 @@ export const fetchCompanies = async ({
   size = 10,
 }): Promise<IBackendRes<IModelPaginate<ICompany>> | undefined> => {
   const regex = new RegExp(name, "i");
-  const res = await fetchWithInterceptor(
+  const res = await fetch(
     `${BACKEND_URL}/api/v1/companies?${page ? `page=${page}` : ""}${
       name ? `&filter=name ~~ '*${name}*'` : ""
     }${size ? `&size=${size}` : ""}`,
@@ -254,7 +257,7 @@ export const fetchCompanies = async ({
       cache: "no-cache",
     }
   );
-  return res;
+  return await res.json();
 };
 
 export const fetchCompanyById = async (
@@ -315,7 +318,7 @@ export const unFollowCompany = async (id: string) => {
 };
 
 export const createCompany = async (body: ICompany) => {
-  const res = await fetchWithInterceptor(`${BACKEND_URL}/api/v1/companies`, {
+  const res = await fetchWithInterceptor(`${BACKEND_URL}/api/v1/companies/create`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -470,7 +473,7 @@ export const fetchJobs = async ({
 
   const filterString =
     filters.length > 0 ? `&filter=${filters.join(" and ")}` : "";
-  const res = await fetchWithInterceptor(
+  const res  = await fetch(
     `${BACKEND_URL}/api/v1/jobs?page=${page}${size ? `&size=${size}` : 10}${
       sort ? `&sort=${sort}` : ""
     }${filterString}`,
@@ -481,13 +484,14 @@ export const fetchJobs = async ({
       },
     }
   );
-  if (!res) {
+  const data = await res.json();
+  if (!res.ok) {
     notification.error({
       message: "Có lỗi xảy ra",
-      description: res.error,
+      description: data.error,
     });
   } else {
-    return res;
+    return data;
   }
 };
 
@@ -507,7 +511,7 @@ export const fetchJobById = async (
 };
 
 export const createJob = async (body: IJob) => {
-  const res = await fetchWithInterceptor(`${BACKEND_URL}/api/v1/jobs`, {
+  const res = await fetchWithInterceptor(`${BACKEND_URL}/api/v1/jobs/create`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -960,7 +964,7 @@ export const fetchReports = async ({
   type: string;
 }): Promise<IBackendRes<IReport>> => {
   const res = await fetch(
-    `${BACKEND_URL}/api/v1/statistics/report?type=${type}`,
+    BACKEND_URL + `/api/v1/statistics/report?type=${type}`,
     {
       method: "GET",
       headers: {
@@ -989,4 +993,22 @@ export const fetchSkills = async ({
   );
 
   return await res.json();
+};
+
+// api notifications
+
+export const fetchNotifications = async ({
+  current = 1,
+  pageSize = 10,
+}): Promise<IBackendRes<IModelPaginate<INotification>>> => {
+  const res = await fetchWithInterceptor(
+    `${BACKEND_URL}/api/v1/notifications?page=${current}&size=${pageSize}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  return res;
 };

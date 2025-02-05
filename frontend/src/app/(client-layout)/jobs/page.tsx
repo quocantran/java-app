@@ -1,5 +1,5 @@
 "use client";
-import React, { Suspense, useEffect, useRef, useState } from "react";
+import React, { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import styles from "../../../styles/JobClient.module.scss";
 import classNames from "classnames/bind";
 import { fetchJobs } from "@/config/api";
@@ -31,6 +31,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { formatNumberToMillions } from "@/helpers/index";
 import { isMobile } from "react-device-detect";
 import { LoadingOutlined } from "@ant-design/icons";
+import { debounce } from "lodash";
 dayjs.extend(relativeTime);
 dayjs.locale(vi_VN);
 
@@ -109,12 +110,16 @@ const JobClient = (props: any) => {
 
     fetchData(current);
   }, [sort]);
-  const handleScroll = (e: any) => {
-    const { scrollTop, scrollHeight, clientHeight } = e.target;
-    if (scrollTop + clientHeight >= scrollHeight - 300) {
-      setCurrent((prevCurrent) => prevCurrent + 1);
-    }
-  };
+  const handleScroll = useCallback(
+    debounce((e: any) => {
+      if (loading) return;
+      const { scrollTop, scrollHeight, clientHeight } = e.target;
+      if (scrollTop + clientHeight >= scrollHeight - 300) {
+        setCurrent((prevCurrent) => prevCurrent + 1);
+      }
+    }, 300),
+    [loading]
+  );
 
   useEffect(() => {
     setJobSelect(jobs[0]);

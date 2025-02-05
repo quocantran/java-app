@@ -72,7 +72,7 @@ public class AuthController {
                                 .path("/")
                                 .maxAge(60 * 60 * 24 * 30).build();
 
-                ResponseCookie userIdCookie = ResponseCookie.from("userId", String.valueOf(current.getId()))
+                ResponseCookie accessTokenCookie = ResponseCookie.from("access_token", String.valueOf(response.getAccessToken()))
                                 .path("/")
                                 .maxAge(60 * 60 * 24 * 30)
                                 .build();
@@ -80,7 +80,7 @@ public class AuthController {
                 return ResponseEntity
                                 .ok()
                                 .header(HttpHeaders.SET_COOKIE, resCookie.toString())
-                                .header(HttpHeaders.SET_COOKIE, userIdCookie.toString())
+                                .header(HttpHeaders.SET_COOKIE, accessTokenCookie.toString())
                                 .body(response);
 
         }
@@ -170,7 +170,7 @@ public class AuthController {
                 Response<Object> responseObj = new Response<>();
                 HttpStatus status;
 
-                if (throwable instanceof BadCredentialsException) {
+                if (throwable instanceof BadCredentialsException || throwable instanceof UnauthorizedException) {
                         status = HttpStatus.UNAUTHORIZED;
                         responseObj.setMessage("error");
                 } else {
@@ -179,7 +179,7 @@ public class AuthController {
                 }
 
                 responseObj.setStatus(status.value());
-                responseObj.setError("Internal Server Error");
+                responseObj.setError(throwable.getMessage());
                 log.info(throwable.getMessage());
                 return new ResponseEntity<>(responseObj, status);
         }

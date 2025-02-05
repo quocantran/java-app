@@ -1,6 +1,7 @@
 package com.example.test.service;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -51,7 +52,7 @@ public class PermissionService {
 
         return resultPaginationDTO;
     }
-
+    @CacheEvict(value = "permissions", allEntries = true)
     public UpdatePermissionDTO update(String id, UpdatePermissionDTO permission) throws BadRequestException {
         try {
             Long.parseLong(id);
@@ -69,12 +70,10 @@ public class PermissionService {
 
         this.permissionRepository.save(entity);
 
-        modelMapper.map(entity, permission);
-
         return permission;
 
     }
-
+    @CacheEvict(value = "permissions", allEntries = true)
     public void delete(String id) throws BadRequestException {
         try {
             Long.parseLong(id);
