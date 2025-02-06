@@ -182,12 +182,7 @@ public class ResumeService {
     public ResponsePaginationDTO getByUser(Specification<JobResume> spec, Pageable pageable) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        Page<JobResume> resumes = this.jobResumeRepository.findAll(spec, pageable);
-
-        Page<JobResume> resumesByUser = new PageImpl<JobResume>(resumes.stream()
-                .filter(resume -> resume.getResume().getUser().getEmail().equals(username))
-                .collect(Collectors.toList()),
-                PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()), resumes.getTotalElements());
+        Page<JobResume> resumes = this.jobResumeRepository.findAllByResumeUserEmail(username, pageable);
 
         ResponsePaginationDTO resultPaginationDTO = new ResponsePaginationDTO();
 
@@ -200,7 +195,7 @@ public class ResumeService {
         meta.setTotal(resumes.getTotalElements());
 
         resultPaginationDTO.setMeta(meta);
-        List<ResponseResumeDTO> responseResumesDTO = resumesByUser.stream()
+        List<ResponseResumeDTO> responseResumesDTO = resumes.stream()
                 .map(resume -> resume.convertResponseResumeDto())
                 .collect(Collectors.toList());
 

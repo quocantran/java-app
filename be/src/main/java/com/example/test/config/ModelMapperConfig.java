@@ -22,12 +22,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 public class ModelMapperConfig {
 
     @Bean
-    public ObjectMapper objectMapper() {
-        return Jackson2ObjectMapperBuilder.json()
-                .modules(new JavaTimeModule())
-                .build();
-    }
-    @Bean
     protected ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration()

@@ -73,25 +73,27 @@ const MessageCard = (props: IProps) => {
           </Popconfirm>
         )}
 
-        {chat.content.length > 0 && (
-          <div
-            style={chat.user?.id === userId ? { float: "right" } : {}}
-            className={cx("message-text")}
-          >
-            <p>{chat.content}</p>
-          </div>
-        )}
-
-        <div>
-          {(chat.fileUrl?.length as unknown as number) > 0 && (
-            <Image
-              className={cx("img-file")}
-              style={chat.user?.id === userId ? { float: "right" } : {}}
-              src={chat.fileUrl}
-              alt="file"
-            />
+        <div style={{ display: "flex", flexDirection: "column", alignItems: chat.user?.id === userId ? "flex-end" : "flex-start" }}>
+          {chat.content.length > 0 && (
+            <div
+              
+              className={cx("message-text")}
+            >
+              <p>{chat.content}</p>
+            </div>
           )}
+
+          <div >
+            {(chat.fileUrl?.length as unknown as number) > 0 && (
+              <Image
+                className={cx("img-file")}
+                src={chat.fileUrl}
+                alt="file"
+              />
+            )}
+          </div>
         </div>
+
       </div>
     </div>
   );

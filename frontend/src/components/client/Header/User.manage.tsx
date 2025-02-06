@@ -103,7 +103,8 @@ const UserResume = (props: any) => {
     },
     {
       title: "",
-      dataIndex: "resumeUrl",
+      dataIndex: "url",
+      key: "url",
       render: (value) => (
         <a href={value} target="_blank" rel="noopener noreferrer">
           Chi tiết

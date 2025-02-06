@@ -672,7 +672,7 @@ export const fetchPermissions = async (
   const res = await fetchWithInterceptor(
     `${BACKEND_URL}/api/v1/permissions?page=${page}${
       size ? `&size=${size}` : ""
-    }&filter=${filterString}`,
+    }${filterString}`,
     {
       method: "GET",
       headers: {
@@ -970,6 +970,7 @@ export const fetchReports = async ({
       headers: {
         "Content-Type": "application/json",
       },
+      cache: "no-cache",
     }
   );
   return await res.json();

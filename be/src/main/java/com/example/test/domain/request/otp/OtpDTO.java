@@ -1,5 +1,8 @@
 package com.example.test.domain.request.otp;
 
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
 public class OtpDTO {
     private String email, otp;
 
@@ -8,8 +11,7 @@ public class OtpDTO {
         this.otp = otp;
     }
 
-    public OtpDTO() {
-    }
+   
 
     public String getEmail() {
         return email;

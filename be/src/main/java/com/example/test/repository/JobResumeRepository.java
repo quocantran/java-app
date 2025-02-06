@@ -18,4 +18,6 @@ public interface JobResumeRepository
     void deleteByJobIdAndResumeId(Long jobId, Long resumeId);
 
     Page<JobResume> findAllByJobId(Long jobId, Pageable pageable);
+
+    Page<JobResume> findAllByResumeUserEmail(String userEmail, Pageable pageable);
 }

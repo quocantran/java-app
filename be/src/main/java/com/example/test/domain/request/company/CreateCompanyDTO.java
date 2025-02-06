@@ -1,7 +1,9 @@
 package com.example.test.domain.request.company;
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 public class CreateCompanyDTO {
     @NotBlank(message = "Name is required")
     private String name;

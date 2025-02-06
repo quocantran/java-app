@@ -80,7 +80,7 @@ public class RoleService {
         return role;
     }
 
-    @Cacheable(value = "roles", key = "'roles-' + #pageable.pageNumber + '-' + #pageable.pageSize")
+    @Cacheable(value = "roles", key = "'roles-' + #pageable.pageNumber + '-' + #pageable.pageSize + #spec.toString()")
     public ResponsePaginationDTO getRoles(Specification<Role> spec, Pageable pageable) {
         Page<Role> roles = this.roleRepository.findAll(spec, pageable);
 

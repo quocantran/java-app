@@ -1,5 +1,8 @@
 package com.example.test.domain.request.resume;
 
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
 public class ResumeByJobDTO {
     private String jobId;
     private Long page, size;

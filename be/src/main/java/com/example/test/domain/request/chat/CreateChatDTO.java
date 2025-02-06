@@ -1,5 +1,8 @@
 package com.example.test.domain.request.chat;
 
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
 public class CreateChatDTO {
     private String content;
     private String fileUrl;

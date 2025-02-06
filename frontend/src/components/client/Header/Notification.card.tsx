@@ -20,8 +20,7 @@ const NotificationCard = (props: IProps) => {
       <Link href={`/jobs/${notification.options.jobId}`}>
         <div className={cx("noti-title")}>
           <span>
-            
-              "Nhà tuyển dụng đã đăng việc làm mới"
+            Nhà tuyển dụng đã đăng việc làm mới
           </span>
         </div>
 

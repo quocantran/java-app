@@ -52,9 +52,9 @@ const ResumeTable = (props: IProps) => {
 
   const columns: ColumnsType<IResume> = [
     {
-      title: "Id",
-      dataIndex: "id",
-      key: "id",
+      title: "STT",
+      key: "key",
+      render: (_value, _entity, index) => index + 1,
     },
     {
       title: "Thuộc về công việc",
@@ -67,7 +67,7 @@ const ResumeTable = (props: IProps) => {
       dataIndex: "url",
       key: "url",
       render: (url: string) => (
-        <a href={url} target="_blank" rel="noopener noreferrer">
+        <a href={url} target="_blank">
           Nhấn vào đây để xem
         </a>
       ),
@@ -211,7 +211,7 @@ const ResumeTable = (props: IProps) => {
           },
         }}
         onChange={onChange}
-        rowKey="id"
+        rowKey="key"
         bordered
         dataSource={resumes}
         columns={columns}

@@ -7,7 +7,9 @@ import com.example.test.domain.Company;
 import com.example.test.utils.constant.LevelEnum;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 public class CreateJobDTO extends UpdateJobDTO {
     @NotNull(message = "Company is required")
     private Long company;

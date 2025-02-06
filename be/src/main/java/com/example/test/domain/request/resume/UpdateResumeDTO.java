@@ -4,13 +4,18 @@ import com.example.test.utils.constant.StatusEnum;
 
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import lombok.NoArgsConstructor;
 
+
+@NoArgsConstructor
 public class UpdateResumeDTO {
 
     @Enumerated(EnumType.STRING)
     private StatusEnum status;
 
     private Long jobId;
+
+
 
     public UpdateResumeDTO(StatusEnum status, Long jobId) {
         this.status = status;
@@ -23,9 +28,6 @@ public class UpdateResumeDTO {
 
     public void setJobId(Long jobId) {
         this.jobId = jobId;
-    }
-
-    public UpdateResumeDTO() {
     }
 
     public StatusEnum getStatus() {

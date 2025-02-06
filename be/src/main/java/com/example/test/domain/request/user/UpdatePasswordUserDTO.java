@@ -1,7 +1,9 @@
 package com.example.test.domain.request.user;
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 public class UpdatePasswordUserDTO {
 
     @NotBlank(message = "password is required")

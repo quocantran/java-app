@@ -1,7 +1,9 @@
 package com.example.test.domain.request.comment;
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 public class CommentCreateDTO {
     @NotBlank(message = "Company ID is required")
     private String companyId;

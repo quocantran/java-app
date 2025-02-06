@@ -33,7 +33,7 @@ public class PermissionService {
         return permissionRepository.existsByNameAndApiPathAndMethod(name, apiPath, method);
     }
 
-    @Cacheable(value = "permissions", key = "'permissions-' + #pageable.pageNumber + '-' + #pageable.pageSize")
+    @Cacheable(value = "permissions", key = "'permissions-' + #pageable.pageNumber + '-' + #pageable.pageSize + #spec.toString()")
     public ResponsePaginationDTO getPermissions(Specification<Permission> spec, Pageable pageable) {
         Page<Permission> permissions = this.permissionRepository.findAll(spec, pageable);
 

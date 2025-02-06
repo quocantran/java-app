@@ -12,6 +12,8 @@ const cx = classNames.bind(styles);
 
 const Admin = async () => {
   const res = await fetchReports({ type: "week" });
+  console.log(res.data);
+  
   const data = res.data as IReport;
   return (
     <div className={cx("wrapper")}>

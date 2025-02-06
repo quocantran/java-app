@@ -2,8 +2,10 @@ package com.example.test.domain.request.permission;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class UpdatePermissionDTO {
     @NotBlank(message = "name is required")
     private String name;
@@ -15,8 +17,6 @@ public class UpdatePermissionDTO {
     @NotBlank(message = "module is required")
     private String module;
 
-    public UpdatePermissionDTO() {
-    }
 
     public UpdatePermissionDTO(String name, String apiPath, String method, String module) {
         this.name = name;

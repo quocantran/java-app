@@ -7,6 +7,9 @@ import com.example.test.domain.Role;
 import com.example.test.utils.constant.GenderEnum;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
 public class UpdateUserDTO {
     private String name, address, avatar, email;
 
