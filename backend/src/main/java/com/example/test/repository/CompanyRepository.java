@@ -18,13 +18,13 @@ public interface CompanyRepository extends JpaRepository<Company, Long>, JpaSpec
 
     Boolean existsById(long id);
 
-    @Query(value = "SELECT COUNT(*) FROM COMPANIES WHERE created_at <= CURRENT_DATE - INTERVAL 7 DAY", nativeQuery = true)
+    @Query(value = "SELECT COUNT(*) FROM companies WHERE created_at <= CURRENT_DATE - INTERVAL 7 DAY", nativeQuery = true)
     Long countCompanyPast1Week();
 
-    @Query(value = "SELECT COUNT(*) FROM COMPANIES WHERE created_at <=  CURRENT_DATE - INTERVAL 1 MONTH", nativeQuery = true)
+    @Query(value = "SELECT COUNT(*) FROM companies WHERE created_at <=  CURRENT_DATE - INTERVAL 1 MONTH", nativeQuery = true)
     Long countCompanyPast1Month();
 
-    @Query(value = "SELECT COUNT(*) FROM COMPANIES WHERE created_at <=  CURRENT_DATE - INTERVAL 1 YEAR ", nativeQuery = true)
+    @Query(value = "SELECT COUNT(*) FROM companies WHERE created_at <=  CURRENT_DATE - INTERVAL 1 YEAR ", nativeQuery = true)
     Long countCompanyPast1Year();
 
 }

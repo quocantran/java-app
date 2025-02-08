@@ -18,13 +18,13 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
 
     Boolean existsById(long id);
 
-    @Query(value = "SELECT COUNT(*) FROM USERS WHERE created_at <= CURRENT_DATE - INTERVAL 7 DAY", nativeQuery = true)
+    @Query(value = "SELECT COUNT(*) FROM users WHERE created_at <= CURRENT_DATE - INTERVAL 7 DAY", nativeQuery = true)
     Long countUsersPast1Week();
 
-    @Query(value = "SELECT COUNT(*) FROM USERS WHERE created_at <=  CURRENT_DATE - INTERVAL 1 MONTH", nativeQuery = true)
+    @Query(value = "SELECT COUNT(*) FROM users WHERE created_at <=  CURRENT_DATE - INTERVAL 1 MONTH", nativeQuery = true)
     Long countUsersPast1Month();
 
-    @Query(value = "SELECT COUNT(*) FROM USERS WHERE created_at <=  CURRENT_DATE - INTERVAL 1 YEAR ", nativeQuery = true)
+    @Query(value = "SELECT COUNT(*) FROM users WHERE created_at <=  CURRENT_DATE - INTERVAL 1 YEAR ", nativeQuery = true)
     Long countUsersPast1Year();
 
 }

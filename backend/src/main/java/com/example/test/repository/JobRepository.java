@@ -31,13 +31,13 @@ public interface JobRepository extends JpaRepository<Job, Long>, JpaSpecificatio
 
     List<Job> findBySkillsIn(List<Skill> skills);
 
-    @Query(value = "SELECT COUNT(*) FROM JOBS WHERE created_at <= CURRENT_DATE - INTERVAL 7 DAY", nativeQuery = true)
+    @Query(value = "SELECT COUNT(*) FROM jobs WHERE created_at <= CURRENT_DATE - INTERVAL 7 DAY", nativeQuery = true)
     Long countJobPast1Week();
 
-    @Query(value = "SELECT COUNT(*) FROM JOBS WHERE created_at <=  CURRENT_DATE - INTERVAL 1 MONTH ", nativeQuery = true)
+    @Query(value = "SELECT COUNT(*) FROM jobs WHERE created_at <=  CURRENT_DATE - INTERVAL 1 MONTH ", nativeQuery = true)
     Long countJobPast1Month();
 
-    @Query(value = "SELECT COUNT(*) FROM JOBS WHERE created_at <=  CURRENT_DATE - INTERVAL 1 YEAR ", nativeQuery = true)
+    @Query(value = "SELECT COUNT(*) FROM jobs WHERE created_at <=  CURRENT_DATE - INTERVAL 1 YEAR ", nativeQuery = true)
     Long countJobPast1Year();
 
 }

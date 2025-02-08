@@ -13,7 +13,7 @@ public class CustomCorsConfiguration {
     protected CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(
-                Arrays.asList("http://localhost:3000"));
+                Arrays.asList("http://localhost:3000", "http://3.1.65.31:3000", "http://3.1.65.31","https://3.1.65.31:3000", "https://3.1.65.31", "http://ec2-3-1-65-31.ap-southeast-1.compute.amazonaws.com"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "HEAD", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
